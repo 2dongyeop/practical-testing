@@ -2,6 +2,9 @@ package io.dongvelop.cafekosk.unit;
 
 import io.dongvelop.cafekosk.unit.beverage.Americano;
 import io.dongvelop.cafekosk.unit.beverage.Latte;
+import io.dongvelop.cafekosk.unit.order.Order;
+
+import java.time.LocalDateTime;
 
 public class CafeKioskRunner {
 
@@ -16,5 +19,7 @@ public class CafeKioskRunner {
 
         int totalPrice = cafeKiosk.calculateTotalPrice();
         System.out.println("총 주문가격 : " + totalPrice);
+
+        Order order = cafeKiosk.createOrder(LocalDateTime.now());
     }
 }
