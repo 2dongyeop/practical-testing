@@ -24,6 +24,8 @@ class CafeKioskTest {
         System.out.println(">>> 담긴 음료 이름 : " + cafeKiosk.getBeverages().get(0).getName());
     }
 
+//    @DisplayName("음료 1개 추가 테스트") // bad case
+    @DisplayName("음료 1개를 추가하면 주문 목록에 담긴다") // good case
     @Test
     void add() {
 
@@ -103,6 +105,7 @@ class CafeKioskTest {
         assertThat(totalPrice).isEqualTo(8500);
     }
 
+    @DisplayName("테스트하기 어려운 케이스 - 성공 여부가 현재 시간에 의존")
     @Test
     void createOrder() {
 
@@ -111,12 +114,13 @@ class CafeKioskTest {
 
         cafeKiosk.add(americano);
 
-        Order order = cafeKiosk.createOrder();
-
-        assertThat(order.getBeverages()).hasSize(1);
-        assertThat(order.getBeverages().get(0)).isEqualTo(americano);
+//        Order order = cafeKiosk.createOrder();
+//
+//        assertThat(order.getBeverages()).hasSize(1);
+//        assertThat(order.getBeverages().get(0)).isEqualTo(americano);
     }
 
+    @DisplayName("테스트하기 어려운 영역을 분리하기")
     @Test
     void createOrderWithCurrentTime() {
 
@@ -131,8 +135,17 @@ class CafeKioskTest {
         assertThat(order.getBeverages().get(0)).isEqualTo(americano);
     }
 
+    /**
+     * DisplayName 작성시 도메인 용어를 사용하자.
+     *  - 특정 시간              -> bad
+     *  - 영업 종료 시간         -> good
+     * 메서드 자체의 관점보다 도메인 정책 관점으로
+     * 테스트의 현상을 중점으로 기술하지 말 것
+     *  - "~~~ 하면 실패한다."         -> bad
+     *  - "~~~ 주문을 생성할 수 없다." -> good
+     */
     @Test
-    @DisplayName("테스트하기 어려운 영역을 분리하기")
+    @DisplayName("영업 종료 시간 이후에는 주문을 생성할 수 없다.")
     void createOrderWithOutsideOpenTime() {
 
         CafeKiosk cafeKiosk = new CafeKiosk();
