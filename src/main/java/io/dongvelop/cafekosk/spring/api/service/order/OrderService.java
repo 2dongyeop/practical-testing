@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +28,11 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final StockRepository stockRepository;
 
+    /**
+     * 재고 감소 -> 동시성 문제 고민 필요.
+     * Optimistic Lock / Pessimistic Lock / ... 필요
+     *
+     */
     @Transactional
     public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredDateTime) {
 
@@ -35,23 +41,26 @@ public class OrderService {
         // get product
         List<Product> products = findProductsBy(productNumbers);
 
-        // 재고 차감 체크가 필요한 상품들 필터링
-        List<String> stockProductNumbers = products.stream()
-                .filter(product -> ProductType.containsStockType(product.getType()))
-                .map(Product::getProductNumber)
-                .toList();
+        // 재고 차감
+        deductStockQuantities(products);
+
+        // create order
+        Order order = Order.create(products, registeredDateTime);
+
+        return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private void deductStockQuantities(List<Product> products) {
+        List<String> stockProductNumbers = extractStockProductNumbers(products);
 
         // 재고 엔티티 조회
-        List<Stock> stocks = stockRepository.findAllByProductNumberIn(stockProductNumbers);
-        Map<String, Stock> stockMap = stocks.stream()
-                .collect(Collectors.toMap(Stock::getProductNumber, stock -> stock));
+        Map<String, Stock> stockMap = createStockMapBy(stockProductNumbers);
 
         // 상품별 카운팅
-        Map<String, Long> productCountingMap = stockProductNumbers.stream()
-                .collect(Collectors.groupingBy(productNumber -> productNumber, Collectors.counting()));
+        Map<String, Long> productCountingMap = createCountingMapBy(stockProductNumbers);
 
         // 재고 차감 시도
-        for (String stockProductNumber : stockProductNumbers) {
+        for (String stockProductNumber : new HashSet<>(stockProductNumbers)) {
             Stock stock = stockMap.get(stockProductNumber);
             int quantity = productCountingMap.get(stockProductNumber).intValue();
 
@@ -61,11 +70,25 @@ public class OrderService {
 
             stock.deductQuantity(quantity);
         }
+    }
 
-        // create order
-        Order order = Order.create(products, registeredDateTime);
+    private static List<String> extractStockProductNumbers(List<Product> products) {
+        // 재고 차감 체크가 필요한 상품들 필터링
+        return products.stream()
+                .filter(product -> ProductType.containsStockType(product.getType()))
+                .map(Product::getProductNumber)
+                .toList();
+    }
 
-        return OrderResponse.of(orderRepository.save(order));
+    private Map<String, Stock> createStockMapBy(List<String> stockProductNumbers) {
+        List<Stock> stocks = stockRepository.findAllByProductNumberIn(stockProductNumbers);
+        return stocks.stream()
+                .collect(Collectors.toMap(Stock::getProductNumber, stock -> stock));
+    }
+
+    private static Map<String, Long> createCountingMapBy(List<String> stockProductNumbers) {
+        return stockProductNumbers.stream()
+                .collect(Collectors.groupingBy(productNumber -> productNumber, Collectors.counting()));
     }
 
     private List<Product> findProductsBy(List<String> productNumbers) {
