@@ -1,19 +1,48 @@
 package io.dongvelop.cafekosk.spring.api.service.product;
 
+import io.dongvelop.cafekosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import io.dongvelop.cafekosk.spring.api.service.product.response.ProductResponse;
 import io.dongvelop.cafekosk.spring.domain.product.Product;
 import io.dongvelop.cafekosk.spring.domain.product.ProductRepository;
 import io.dongvelop.cafekosk.spring.domain.product.ProductSellingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository productRepository;
+
+    /** 동시성 이슈 고려 필요 */
+    @Transactional
+    public ProductResponse createProduct(ProductCreateRequest request) {
+        // productNumber 부여 -> ex. 001.. 002..
+        // DB에서 마지막 상품번호 읽어와서 +1 시키기
+        String nextProductNumber = createNextProductNumber();
+
+        Product product = request.toEntity(nextProductNumber);
+        Product savedProduct = productRepository.save(product);
+
+        return ProductResponse.of(savedProduct);
+    }
+
+    private String createNextProductNumber() {
+
+        String latestProductNumber = productRepository.findLatestProductNumber();
+        if (latestProductNumber == null) {
+            return  "001";
+        }
+
+        int latestProductNumberInt = Integer.parseInt(latestProductNumber);
+        int nextProductNumberInt = latestProductNumberInt + 1;
+
+        return String.format("%03d", nextProductNumberInt);
+    }
 
     public List<ProductResponse> getSellingProducts() {
         List<Product> products = productRepository.findAllBySellingStatusIn(ProductSellingStatus.forDisplay());
