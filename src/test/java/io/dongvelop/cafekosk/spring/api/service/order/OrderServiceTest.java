@@ -1,6 +1,6 @@
 package io.dongvelop.cafekosk.spring.api.service.order;
 
-import io.dongvelop.cafekosk.spring.api.controller.order.request.OrderCreateRequest;
+import io.dongvelop.cafekosk.spring.api.service.order.request.OrderCreateServiceRequest;
 import io.dongvelop.cafekosk.spring.api.service.order.response.OrderResponse;
 import io.dongvelop.cafekosk.spring.domain.order.OrderRepository;
 import io.dongvelop.cafekosk.spring.domain.orderproduct.OrderProductRepository;
@@ -61,7 +61,7 @@ class OrderServiceTest {
 
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "002"))
                 .build();
 
@@ -97,7 +97,7 @@ class OrderServiceTest {
         productRepository.saveAll(List.of(product1, product2, product3));
 
         // 아메리카노 2개 주문.
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "001"))
                 .build();
 
@@ -138,7 +138,7 @@ class OrderServiceTest {
 
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "002", "001", "003"))
                 .build();
 
@@ -188,7 +188,7 @@ class OrderServiceTest {
 
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "002", "001", "003"))
                 .build();
 

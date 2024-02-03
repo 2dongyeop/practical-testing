@@ -1,17 +1,30 @@
 package io.dongvelop.cafekosk.spring.api.controller.product.dto.request;
 
-import io.dongvelop.cafekosk.spring.domain.product.Product;
+import io.dongvelop.cafekosk.spring.api.service.product.request.ProductCreateServiceRequest;
 import io.dongvelop.cafekosk.spring.domain.product.ProductSellingStatus;
 import io.dongvelop.cafekosk.spring.domain.product.ProductType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductCreateRequest {
 
+    @NotNull(message = "상품 타입은 필수입니다.")
     private ProductType type;
+
+    @NotNull(message = "상품 판매상태는 필수입니다.")
     private ProductSellingStatus sellingStatus;
+
+    @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
+
+    @Positive(message = "상품 가격은 양수여야 합니다.")
     private int price;
 
     @Builder
@@ -22,13 +35,12 @@ public class ProductCreateRequest {
         this.price = price;
     }
 
-    public Product toEntity(String productNumber) {
-
-        return Product.builder()
-                .productNumber(productNumber)
+    public ProductCreateServiceRequest toServiceRequest() {
+        return ProductCreateServiceRequest.builder()
                 .type(type)
                 .sellingStatus(sellingStatus)
                 .name(name)
+                .price(price)
                 .build();
     }
 }

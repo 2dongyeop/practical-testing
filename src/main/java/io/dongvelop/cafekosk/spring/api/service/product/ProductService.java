@@ -1,6 +1,6 @@
 package io.dongvelop.cafekosk.spring.api.service.product;
 
-import io.dongvelop.cafekosk.spring.api.controller.product.dto.request.ProductCreateRequest;
+import io.dongvelop.cafekosk.spring.api.service.product.request.ProductCreateServiceRequest;
 import io.dongvelop.cafekosk.spring.api.service.product.response.ProductResponse;
 import io.dongvelop.cafekosk.spring.domain.product.Product;
 import io.dongvelop.cafekosk.spring.domain.product.ProductRepository;
@@ -20,7 +20,7 @@ public class ProductService {
 
     /** 동시성 이슈 고려 필요 */
     @Transactional
-    public ProductResponse createProduct(ProductCreateRequest request) {
+    public ProductResponse createProduct(ProductCreateServiceRequest request) {
         // productNumber 부여 -> ex. 001.. 002..
         // DB에서 마지막 상품번호 읽어와서 +1 시키기
         String nextProductNumber = createNextProductNumber();

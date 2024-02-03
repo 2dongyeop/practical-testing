@@ -1,6 +1,6 @@
 package io.dongvelop.cafekosk.spring.api.service.order;
 
-import io.dongvelop.cafekosk.spring.api.controller.order.request.OrderCreateRequest;
+import io.dongvelop.cafekosk.spring.api.service.order.request.OrderCreateServiceRequest;
 import io.dongvelop.cafekosk.spring.api.service.order.response.OrderResponse;
 import io.dongvelop.cafekosk.spring.domain.order.Order;
 import io.dongvelop.cafekosk.spring.domain.order.OrderRepository;
@@ -34,7 +34,7 @@ public class OrderService {
      *
      */
     @Transactional
-    public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredDateTime) {
+    public OrderResponse createOrder(OrderCreateServiceRequest request, LocalDateTime registeredDateTime) {
 
         List<String> productNumbers = request.getProductNumbers();
 

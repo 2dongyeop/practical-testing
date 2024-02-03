@@ -1,6 +1,6 @@
 package io.dongvelop.cafekosk.spring.api.service.product;
 
-import io.dongvelop.cafekosk.spring.api.controller.product.dto.request.ProductCreateRequest;
+import io.dongvelop.cafekosk.spring.api.service.product.request.ProductCreateServiceRequest;
 import io.dongvelop.cafekosk.spring.api.service.product.response.ProductResponse;
 import io.dongvelop.cafekosk.spring.domain.product.Product;
 import io.dongvelop.cafekosk.spring.domain.product.ProductRepository;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import static io.dongvelop.cafekosk.spring.domain.product.ProductSellingStatus.S
 import static io.dongvelop.cafekosk.spring.domain.product.ProductType.HANDMADE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 @SpringBootTest
 class ProductServiceTest {
 
@@ -41,7 +42,7 @@ class ProductServiceTest {
         Product product1 = createProduct("001", "아메리카노", HANDMADE, SELLING, 4000);
         productRepository.save(product1);
 
-        ProductCreateRequest request = ProductCreateRequest.builder()
+        ProductCreateServiceRequest request = ProductCreateServiceRequest.builder()
                 .type(HANDMADE)
                 .sellingStatus(SELLING)
                 .name("카푸치노")
@@ -65,7 +66,7 @@ class ProductServiceTest {
     void createProductWhenProductsIsEmpty() throws Exception {
 
         // given
-        ProductCreateRequest request = ProductCreateRequest.builder()
+        ProductCreateServiceRequest request = ProductCreateServiceRequest.builder()
                 .type(HANDMADE)
                 .sellingStatus(SELLING)
                 .name("카푸치노")
