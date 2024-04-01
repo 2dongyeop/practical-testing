@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 /**
@@ -23,8 +23,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
 
-    @Spy  // : @Mock과 다르게, 실제로 동작. + 일부분만 Stubbing 할 수 있음.
-//    @Mock
+//    @Spy  // : @Mock과 다르게, 실제로 동작. + 일부분만 Stubbing 할 수 있음.
+    @Mock
     private MailSendClient mailSendClient;
     @Mock
     private MailSendHistoryRepository mailSendHistoryRepository;
@@ -44,14 +44,22 @@ class MailServiceTest {
 //        final MailSendHistoryRepository mailSendHistoryRepository = mock(MailSendHistoryRepository.class);
 //        final MailService mailService = new MailService(mailSendClient, mailSendHistoryRepository);
 
-        /* MailSendClient를 @Mock으로 작성시 */
+        /* MailSendClient를 @Mock으로 작성시
+        * Mockito 사용 시
+        * */
 //        when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
 //                .thenReturn(true);
 
+        /*
+        * 위 내용을 BDDMockito.given으로 대체 가능
+        * */
+        given(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
+                .willReturn(true);
+
         /* MailSendClient를 @Spy로 작성시 */
-        doReturn(true)
-                .when(mailSendClient)
-                .sendEmail(anyString(), anyString(), anyString(), anyString());
+//        doReturn(true)
+//                .when(mailSendClient)
+//                .sendEmail(anyString(), anyString(), anyString(), anyString());
 
         // when
         boolean result = mailService.sendMail("", "", "", "");
