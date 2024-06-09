@@ -1,5 +1,6 @@
 package io.dongvelop.cafekosk.spring.api.service.order;
 
+import io.dongvelop.cafekosk.spring.IntegrationTestSupport;
 import io.dongvelop.cafekosk.spring.client.mail.MailSendClient;
 import io.dongvelop.cafekosk.spring.domain.mail.MailSendHistory;
 import io.dongvelop.cafekosk.spring.domain.mail.MailSendHistoryRepository;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
@@ -32,8 +32,7 @@ import static org.mockito.Mockito.when;
  * @date 2024. 03. 28
  * @description
  */
-@SpringBootTest
-class OrderStatisticsServiceTest {
+class OrderStatisticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderStatisticsService orderStatisticsService;

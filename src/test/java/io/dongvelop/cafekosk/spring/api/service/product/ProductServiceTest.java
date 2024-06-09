@@ -1,5 +1,6 @@
 package io.dongvelop.cafekosk.spring.api.service.product;
 
+import io.dongvelop.cafekosk.spring.IntegrationTestSupport;
 import io.dongvelop.cafekosk.spring.api.service.product.request.ProductCreateServiceRequest;
 import io.dongvelop.cafekosk.spring.api.service.product.response.ProductResponse;
 import io.dongvelop.cafekosk.spring.domain.product.Product;
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -19,9 +18,7 @@ import static io.dongvelop.cafekosk.spring.domain.product.ProductSellingStatus.S
 import static io.dongvelop.cafekosk.spring.domain.product.ProductType.HANDMADE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class ProductServiceTest {
+class ProductServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ProductService productService;
